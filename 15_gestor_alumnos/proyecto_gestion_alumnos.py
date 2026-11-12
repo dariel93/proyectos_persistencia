@@ -71,15 +71,17 @@ with tab_buscar_dni:
         if not dni:
             st.toast("Por favor, introduce un DNI.")
         elif alumno:
-            st.toast(f"DNI: {alumno['dni']}, Nombre: {alumno['name']}, Email: {alumno['email']}, Curso: {alumno['course']}, Nota: {alumno['note']}")
+            st.success(f"DNI: {alumno['dni']}, Nombre: {alumno['name']}, Email: {alumno['email']}, Curso: {alumno['course']}, Nota: {alumno['note']}")
         else:
             st.toast("Alumno no encontrado.")
             
 with tab_mostrar_todos:
-    cursordb.execute("select * from alumnos")
-    alumnos=cursordb.fetchall()
+    cursordb.execute("SELECT * FROM alumnos")
+    alumnos = cursordb.fetchall()
+
     if alumnos:
-        col_dni,col_name,col_email,col_course,col_note,col_actualizar,col_borrar=st.columns([2, 3, 3, 2, 1, 1, 1])
+        col_dni, col_name, col_email, col_course, col_note, col_actualizar, col_borrar = st.columns([2, 3, 3, 2, 1, 1, 1])
+
         col_dni.write("**DNI**")
         col_name.write("**Nombre**")
         col_email.write("**Email**")
@@ -87,33 +89,95 @@ with tab_mostrar_todos:
         col_note.write("**Nota**")
         col_actualizar.write("**Actualizar**")
         col_borrar.write("**Borrar**")
+
         for alumno in alumnos:
-            col_dni.write(alumno['dni'])
-            col_name.write(alumno['name'])
-            col_email.write(alumno['email'])
-            col_course.write(alumno['course'])
-            col_note.write(str(alumno['note']))
-            if col_actualizar.button("", key=f"actualizar_{alumno['dni']}", icon=":material/edit:",):
-                new_name=st.text_input("Nuevo nombre:", value=alumno['name'], key=f"name_{alumno['dni']}")
-                new_email=st.text_input("Nuevo email:", value=alumno['email'], key=f"email_{alumno['dni']}")
-                new_course=st.text_input("Nuevo curso:", value=alumno['course'], key=f"course_{alumno['dni']}")
-                new_note=st.number_input("Nueva nota:", min_value=0, max_value=10, value=alumno['note'], key=f"note_{alumno['dni']}")
-                if st.button("Guardar cambios", key=f"guardar_{alumno['dni']}"):
-                    cursordb.execute(
-                        "update alumnos set name=%s, email=%s, course=%s, note=%s where dni=%s",
-                        (new_name, new_email, new_course, new_note, alumno['dni'])
-                    )
-                    db.commit()
-                    st.toast(f"Alumno con DNI {alumno['dni']} actualizado correctamente.")
-                    st.rerun()
-            elif col_borrar.button("", key=f"borrar_{alumno['dni']}", icon=":material/delete:",):
-                cursordb.execute("delete from alumnos where dni=%s", (alumno['dni'],))
-                db.commit()
-                st.toast(f"Alumno con DNI {alumno['dni']} eliminado correctamente.")
+            dni = alumno["dni"]
+
+            col_dni.write(dni)
+            col_name.write(alumno["name"])
+            col_email.write(alumno["email"])
+            col_course.write(alumno["course"])
+            col_note.write(str(alumno["note"]))
+
+            if col_actualizar.button("",key=f"actualizar_{dni}",icon=":material/edit:",):
+                st.session_state["alumno_en_edicion"] = dni
                 st.rerun()
-                
-    else:
-        st.error("No hay alumnos en la base de datos.")
+
+            if col_borrar.button("",key=f"borrar_{dni}",icon=":material/delete:",):
+                cursordb.execute("DELETE FROM alumnos WHERE dni = %s",
+                    (dni,)
+                )
+                db.commit()
+                st.toast(f"Alumno con DNI {dni} eliminado correctamente.")
+                st.rerun()
+
+        dni_editando = st.session_state.get("alumno_en_edicion")
+
+        if dni_editando:
+            alumno = next(
+                (a for a in alumnos if a["dni"] == dni_editando),
+                None
+            )
+
+            if alumno:
+                st.divider()
+
+                with st.form(key=f"form_editar_{dni_editando}"):
+                    new_name = st.text_input(
+                        "Nuevo nombre:",
+                        value=alumno["name"],
+                        key=f"name_{dni_editando}"
+                    )
+
+                    new_email = st.text_input(
+                        "Nuevo email:",
+                        value=alumno["email"],
+                        key=f"email_{dni_editando}"
+                    )
+
+                    new_course = st.text_input(
+                        "Nuevo curso:",
+                        value=alumno["course"],
+                        key=f"course_{dni_editando}"
+                    )
+
+                    new_note = st.number_input(
+                        "Nueva nota:",
+                        value=float(alumno["note"]),
+                        min_value=0.0,
+                        max_value=10.0,
+                        step=0.1,
+                        key=f"note_{dni_editando}"
+                    )
+
+                    guardar = st.form_submit_button("Guardar cambios")
+
+                    if guardar:
+                        cursordb.execute(
+                            """
+                            UPDATE alumnos
+                            SET name = %s,
+                                email = %s,
+                                course = %s,
+                                note = %s
+                            WHERE dni = %s
+                            """,
+                            (
+                                new_name,
+                                new_email,
+                                new_course,
+                                new_note,
+                                dni_editando
+                            )
+                        )
+                        db.commit()
+
+                        st.session_state.pop("alumno_en_edicion", None)
+                        st.success(
+                            f"Alumno con DNI {dni_editando} actualizado correctamente."
+                        )
+                        st.rerun()
+            
 
 with tab_eliminar:
     dni=st.text_input("Introduce DNI a eliminar:")

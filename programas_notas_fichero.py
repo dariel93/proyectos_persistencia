@@ -59,7 +59,6 @@ while opcion_elegida!=6 :
                 notas=f.readlines()
                 notas_limpia = list(map(lambda a:int(a.strip()), notas))
             print(notas_limpia)
-            f.close()
         case 6:
             print("Fin del programa!")
         case _:
