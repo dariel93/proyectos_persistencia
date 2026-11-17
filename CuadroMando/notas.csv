@@ -1,0 +1,49 @@
+id_nota,id_alumno,asignatura,evaluacion,nota
+1,1,Python,1,8.5
+2,1,Bases de datos,1,7.0
+3,2,Java,1,6.5
+4,2,Bases de datos,1,8.0
+5,3,Python,1,9.0
+6,3,Bases de datos,1,8.5
+7,4,Java,1,5.5
+8,4,Bases de datos,1,6.0
+9,5,Python,1,7.5
+10,5,Bases de datos,1,9.0
+11,6,Java,1,8.0
+12,6,Bases de datos,1,7.5
+13,7,Python,1,6.0
+14,7,Bases de datos,1,7.0
+15,8,Java,1,9.0
+16,8,Bases de datos,1,8.5
+17,9,Python,1,4.5
+18,9,Bases de datos,1,6.0
+19,10,Java,1,7.0
+20,10,Bases de datos,1,5.5
+21,11,Python,1,8.0
+22,11,Bases de datos,1,9.5
+23,12,Java,1,6.0
+24,12,Bases de datos,1,7.0
+25,1,Python,2,9.0
+26,1,Bases de datos,2,8.0
+27,2,Java,2,7.5
+28,2,Bases de datos,2,8.5
+29,3,Python,2,8.5
+30,3,Bases de datos,2,9.0
+31,4,Java,2,6.5
+32,4,Bases de datos,2,7.0
+33,5,Python,2,8.0
+34,5,Bases de datos,2,9.5
+35,6,Java,2,8.5
+36,6,Bases de datos,2,8.0
+37,7,Python,2,7.0
+38,7,Bases de datos,2,8.0
+39,8,Java,2,9.5
+40,8,Bases de datos,2,9.0
+41,9,Python,2,5.5
+42,9,Bases de datos,2,6.5
+43,10,Java,2,7.5
+44,10,Bases de datos,2,6.5
+45,11,Python,2,8.5
+46,11,Bases de datos,2,9.0
+47,12,Java,2,7.0
+48,12,Bases de datos,2,7.5
