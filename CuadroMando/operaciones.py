@@ -23,6 +23,51 @@ resumen = df.groupby("asignatura").agg(
 )
 print(resumen)
 
+# Curso: todos o cada uno de los cursos existentes.
+cursos = df["curso"].unique().tolist()
+print(cursos)
+# Asignatura: todas o una asignatura concreta.
+asignaturas = df["asignatura"].unique().tolist()
+print(asignaturas)
+# Evaluación: todas, primera o segunda
+evaluaciones = df["evaluacion"].unique().tolist()
+print(evaluaciones)
+grupos = df["grupo"].unique().tolist()
+print(grupos)
+
+# Alumnnos evaluados por curso
+group_curso = df.groupby("curso").agg(
+    alumnos_evaluados=("id_alumno", "nunique")
+)
+print(group_curso)
+
+# Nota media de todas las calificaciones
+nota_media = df["nota"].mean()
+print(nota_media)
+
+# Rendimiento por alumno(id_aluno, nombre,, curso. grupo, noata media. asgnatiras evaluadas, asignturas probandas)
+datos_alumno = ["id_alumno", "nombre", "curso", "grupo"]
+
+# Media de cada asignatura por alumno
+medias_asignaturas = df.groupby(datos_alumno + ["asignatura"]).agg(nota_asignatura=("nota", "mean"))
+
+
+# Resumen de rendimiento por alumno
+rendimiento = medias_asignaturas.groupby(datos_alumno).agg(
+        nota_media=("nota_asignatura", "mean"),
+        asignaturas_evaluadas=("nota_asignatura", "count"),
+        asignaturas_aprobadas=(
+            "nota_asignatura",
+            lambda notas: (notas >= 5).sum()
+        )
+).round({"nota_media": 2})
+
+
+print(rendimiento)
+
+
+
+
 
 
 
